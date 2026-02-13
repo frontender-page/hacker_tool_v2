@@ -217,54 +217,57 @@
     </section>
 
  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  const firebaseConfig = { databaseURL: "https://hackerdash-d2075-default-rtdb.firebaseio.com/" };
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  
-  const terminal = document.getElementById('wifiTerminal');
-  const priorityTerminal = document.getElementById('priorityTerminal');
+        // ТВОЯ КОНФИГУРАЦИЯ
+        const firebaseConfig = { 
+            databaseURL: "https://hackerdash-d2075-default-rtdb.firebaseio.com/" 
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-  // Слушаем ОБЩИЙ лог
-  onChildAdded(ref(db, 'logs'), (snapshot) => {
-    const data = snapshot.val();
-    const entry = document.createElement('div');
-    entry.className = 'text-[9px] border-b border-white/5 py-1';
-    entry.innerHTML = `<span class="text-blue-500">[${data.time}]</span> ${data.url}`;
-    terminal.appendChild(entry);
-    terminal.scrollTop = terminal.scrollHeight;
-  });
-  window.wipeData = function() {
-    if (confirm("Вы уверены, что хотите полностью очистить все логи (включая важные)?")) {
-        // 1. Очищаем основную базу
-        const logsRef = ref(db, 'logs');
-        set(logsRef, null);
+        const terminal = document.getElementById('wifiTerminal');
+        const priorityTerminal = document.getElementById('priorityTerminal');
 
-        // 2. Очищаем базу важных событий
-        const priorityRef = ref(db, 'priority_logs');
-        set(priorityRef, null);
+        // 1. СЛУШАЕМ ОБЩИЙ ТРАФИК
+        onChildAdded(ref(db, 'logs'), (snapshot) => {
+            const data = snapshot.val();
+            const entry = document.createElement('div');
+            entry.className = 'border-l border-green-900 pl-2 py-0.5';
+            entry.innerHTML = `<span class="text-green-700">[${data.time}]</span> <span class="text-blue-400">${data.ip}</span> → <span class="text-white">${data.url}</span>`;
+            terminal.appendChild(entry);
+            terminal.scrollTop = terminal.scrollHeight;
+        });
 
-        // 3. Моментально очищаем интерфейс (чтобы не ждать обновления)
-        document.getElementById('wifiTerminal').innerHTML = '<div class="text-green-500">[SYSTEM] База данных очищена...</div>';
-        document.getElementById('priorityTerminal').innerHTML = '<div class="text-gray-500 italic">Ожидание целей...</div>';
-        
-        console.log("Full Wipe Complete");
-    }
-}
+        // 2. СЛУШАЕМ ВАЖНЫЕ ЦЕЛИ (ROBLOX/YOUTUBE)
+        onChildAdded(ref(db, 'priority_logs'), (snapshot) => {
+            const data = snapshot.val();
+            if(priorityTerminal.innerText.includes('Waiting')) priorityTerminal.innerHTML = '';
 
-  // Слушаем ПРИОРИТЕТНЫЙ лог (для YouTube/Roblox)
-  onChildAdded(ref(db, 'priority_logs'), (snapshot) => {
-    const data = snapshot.val();
-    if(priorityTerminal) {
-        const entry = document.createElement('div');
-        entry.className = 'bg-red-900/40 border-l-2 border-red-600 p-1 mb-1 animate-pulse';
-        entry.innerHTML = `<b class="text-red-500">${data.target}</b> <span class="text-[8px] text-gray-400">${data.time}</span>`;
-        priorityTerminal.prepend(entry);
-    }
-  });
-</script>
+            const entry = document.createElement('div');
+            entry.className = 'bg-red-900/20 border-l-4 border-red-600 p-2 animate-pulse';
+            entry.innerHTML = `
+                <div class="flex justify-between">
+                    <span class="text-red-500 font-bold uppercase">${data.target} DETECTED</span>
+                    <span class="text-white">${data.time}</span>
+                </div>
+                <div class="text-gray-400">Device: ${data.ip} | Domain: ${data.url}</div>
+            `;
+            priorityTerminal.prepend(entry);
+        });
+
+        // 3. ФУНКЦИЯ ОЧИСТКИ (WIPE)
+        window.wipeData = function() {
+            if (confirm("ВНИМАНИЕ: Это полностью удалит все логи из базы данных. Продолжить?")) {
+                set(ref(db, 'logs'), null);
+                set(ref(db, 'priority_logs'), null);
+                
+                terminal.innerHTML = '<div class="text-green-500">[SYSTEM] Database wiped successfully.</div>';
+                priorityTerminal.innerHTML = '<div class="text-gray-600 italic">Waiting for targets (Roblox/YouTube)...</div>';
+            }
+        }
+    </script>
 
     <script src="app.js"></script>
     
