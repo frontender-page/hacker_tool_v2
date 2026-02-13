@@ -1,0 +1,329 @@
+/* Базовые настройки */
+body {
+    background-color: #030712;
+    color: #ffffff;
+}
+
+.mono { font-family: 'Fira Code', monospace; }
+
+/* Кастомные карточки */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.auth-card {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Кнопки */
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #3b82f6;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Навигация */
+.nav-logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #2563eb;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+}
+
+.nav-title {
+    font-weight: 900;
+    font-size: 1.25rem;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+}
+
+/* Поля ввода */
+.auth-input, .search-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.auth-input:focus, .search-input:focus {
+    border-color: #2563eb;
+}
+
+/* Профиль */
+.prof-avatar {
+    width: 6rem;
+    height: 6rem;
+    background: #2563eb;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
+}
+
+.status-badge {
+    color: #3b82f6;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+/* Турнирные кнопки */
+.t-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.t-btn-easy { color: #22c55e; background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); }
+.t-btn-medium { color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2); }
+.t-btn-hard { color: #ef4444; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+
+.t-btn:hover { transform: scale(1.02); }
+
+/* IDE */
+.ide-textarea {
+    flex: 1;
+    background: transparent;
+    padding: 1.5rem;
+    font-family: 'Fira Code', monospace;
+    color: #60a5fa;
+    outline: none;
+    resize: none;
+    line-height: 1.6;
+}
+
+.ide-console {
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: #22c55e;
+    overflow-y: auto;
+}
+
+.target-box {
+    width: 10rem;
+    height: 10rem;
+    border: 4px solid rgba(37, 99, 235, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.target-box::after {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    border: 2px solid #2563eb;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+body { background-color: #030712; color: white; margin: 0; padding: 0; }
+.mono { font-family: 'Fira Code', monospace; }
+.hidden { display: none !important; }
+
+/* Навигация */
+.nav-logo { width: 40px; height: 40px; background: #2563eb; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+.nav-title { font-weight: 900; font-size: 20px; letter-spacing: -1px; }
+
+/* Поля ввода */
+.auth-input, .search-input { 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    border-radius: 12px; 
+    padding: 12px 20px; 
+    outline: none; 
+}
+.auth-input:focus, .search-input:focus { border-color: #2563eb; }
+
+/* Кнопки */
+.btn-primary { background: #2563eb; color: white; border-radius: 12px; font-weight: 700; transition: 0.2s; }
+.btn-primary:hover { background: #3b82f6; transform: translateY(-2px); }
+.btn-secondary { background: rgba(255, 255, 255, 0.05); padding: 8px 20px; border-radius: 8px; font-weight: 600; }
+
+/* Профиль */
+.glass-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 32px; backdrop-filter: blur(10px); }
+.prof-avatar { width: 100px; height: 100px; background: #2563eb; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 900; margin-bottom: 20px; box-shadow: 0 0 30px rgba(37, 99, 235, 0.3); }
+.status-badge { color: #3b82f6; font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+
+/* Турниры */
+.t-btn { width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; border: 1px solid transparent; transition: 0.2s; cursor: pointer; }
+.t-btn-easy { color: #22c55e; background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); }
+.t-btn-medium { color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2); }
+.t-btn-hard { color: #ef4444; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+
+/* IDE */
+.ide-textarea { flex: 1; background: transparent; padding: 24px; font-family: 'Fira Code', monospace; font-size: 14px; outline: none; resize: none; border: none; }
+.ide-console { background: rgba(0,0,0,0.5); padding: 16px; font-family: 'Fira Code', monospace; color: #22c55e; font-size: 12px; overflow-y: auto; border-top: 1px solid rgba(255,255,255,0.05); }
+
+/* Цель */
+.target-box { width: 160px; height: 160px; border: 4px solid rgba(37, 99, 235, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+.target-box::after { content: ''; position: absolute; inset: -10px; border: 2px solid #2563eb; border-radius: 50%; border-top-color: transparent; animation: spin 2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#lessonBody b { color: #2563eb; font-weight: 800; }
+#lessonBody ul { margin-top: 1rem; }
+#lessonBody li { margin-bottom: 0.5rem; border-left: 2px solid #2563eb; padding-left: 10px; }
+#lessonBody code { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', monospace; }
+body { background: #030712; color: white; scroll-behavior: smooth; }
+.hidden { display: none !important; }
+.view-content.active { display: block; }
+
+/* Кастомные элементы */
+.glass-card { 
+    background: rgba(255, 255, 255, 0.02); 
+    border: 1px solid rgba(255, 255, 255, 0.05); 
+    border-radius: 2rem; 
+    transition: 0.3s; 
+}
+.glass-card:hover { border-color: rgba(37, 99, 235, 0.3); background: rgba(255,255,255,0.04); }
+
+.nav-logo { 
+    width: 40px; height: 40px; background: #2563eb; 
+    border-radius: 12px; display: flex; align-items: center; 
+    justify-content: center; font-weight: 900; 
+}
+
+.btn-primary { 
+    background: #2563eb; color: white; border-radius: 12px; 
+    font-weight: 700; transition: 0.3s; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); background: #3b82f6; }
+
+.auth-input, .search-input { 
+    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); 
+    border-radius: 12px; padding: 12px 20px; outline: none; 
+}
+
+.ide-textarea { 
+    scrollbar-width: thin; 
+    scrollbar-color: #2563eb transparent; 
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.ide-console { 
+    background: #000; border-top: 1px solid #1e293b; 
+    color: #10b981; font-family: 'Fira Code', monospace; 
+}
+
+.prof-avatar { 
+    width: 100px; height: 100px; background: #2563eb; 
+    border-radius: 2rem; display: flex; align-items: center; 
+    justify-content: center; font-size: 44px; font-weight: 900; 
+    margin-bottom: 24px; box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2); 
+}
+
+.status-badge { 
+    color: #3b82f6; font-size: 10px; font-weight: 900; 
+    letter-spacing: 2px; text-transform: uppercase; 
+}
+
+.t-btn { 
+    width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; 
+    border: 1px solid transparent; transition: 0.2s; 
+}
+.t-btn-easy { color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+.t-btn-medium { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
+.t-btn-hard { color: #ef4444; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+.t-btn:hover { transform: scale(1.03); }
+
+.target-box { 
+    width: 180px; height: 180px; border: 4px solid rgba(37, 99, 235, 0.2); 
+    border-radius: 50%; display: flex; align-items: center; 
+    justify-content: center; position: relative; 
+}
+.target-box::after { 
+    content: ''; position: absolute; inset: -15px; border: 2px solid #2563eb; 
+    border-radius: 50%; border-top-color: transparent; 
+    animation: spin 2s linear infinite; 
+}
+
+/* Эффект красного экрана */
+.red-alert-flash {
+    animation: flashRed 0.5s border-box;
+}
+
+@keyframes flashRed {
+    0% { background: rgba(255, 0, 0, 0); }
+    50% { background: rgba(255, 0, 0, 0.5); }
+    100% { background: rgba(255, 0, 0, 0); }
+}
+
+/* Стили колец защиты */
+.security-ring {
+    position: absolute;
+    border: 2px solid rgba(255, 0, 0, 0.3);
+    border-top-color: #ff0000;
+    border-radius: 50%;
+    transition: all 0.5s ease;
+}
+
+.security-ring.broken {
+    transform: scale(1.5);
+    opacity: 0;
+}
+
+@keyframes spin-cw { to { transform: rotate(360deg); } }
+@keyframes spin-ccw { to { transform: rotate(-360deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Добавь это в style.css */
+.timer-low {
+    animation: danger-pulse 1s infinite alternate;
+}
+
+@keyframes danger-pulse {
+    from { box-shadow: inset 0 0 10px rgba(255, 0, 0, 0); }
+    to { box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.3); }
+}
