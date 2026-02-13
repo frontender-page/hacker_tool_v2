@@ -218,9 +218,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onChildAdded, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // КОНФИГУРАЦИЯ ТВОЕЙ БАЗЫ
     const firebaseConfig = { 
         databaseURL: "https://hackerdash-d2075-default-rtdb.firebaseio.com/" 
     };
@@ -231,71 +230,55 @@
     const terminal = document.getElementById('wifiTerminal');
     const priorityTerminal = document.getElementById('priorityTerminal');
 
-    // 1. ЛОГИКА ДЛЯ ОБЩЕГО ОКНА (ВЕСЬ ТРАФИК)
+    // ЛОГИКА ОЧИСТКИ (ВЫНЕСЕНА В ГЛОБАЛЬНУЮ ПЕРЕМЕННУЮ)
+    window.wipeData = async function() {
+        if (confirm("ВНИМАНИЕ: Очистить всю базу данных и интерфейс?")) {
+            try {
+                // 1. Очищаем Firebase (ждем подтверждения от сервера)
+                await set(ref(db, 'logs'), null);
+                await set(ref(db, 'priority_logs'), null);
+                
+                // 2. Моментально чистим интерфейс
+                terminal.innerHTML = '<div class="text-green-500">[SYSTEM] База данных очищена.</div>';
+                priorityTerminal.innerHTML = '<div class="text-gray-600 italic">Ожидание Infinix...</div>';
+                
+                console.log("Database & UI Wiped Successfully");
+            } catch (error) {
+                console.error("Ошибка при очистке:", error);
+                alert("Ошибка доступа к базе данных!");
+            }
+        }
+    }
+
+    // Слушатель общего трафика
     onChildAdded(ref(db, 'logs'), (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
-
         const entry = document.createElement('div');
         entry.className = 'border-l border-green-900 pl-2 py-0.5 text-[9px]';
-        
-        // Берем IP из базы. Если его нет — пишем "SCANNING"
-        const deviceIp = data.ip ? data.ip : "SCANNING...";
-        
-        entry.innerHTML = `
-            <span class="text-green-700">[${data.time}]</span> 
-            <span class="text-blue-500 font-bold">${deviceIp}</span> 
-            <span class="text-white ml-2">→ ${data.url}</span>
-        `;
-        
+        const deviceIp = data.ip || "Unknown";
+        entry.innerHTML = `<span class="text-green-700">[${data.time}]</span> <span class="text-blue-500 font-bold">${deviceIp}</span> <span class="text-white ml-2">→ ${data.url}</span>`;
         terminal.appendChild(entry);
-        
-        // Автопрокрутка вниз
         terminal.scrollTop = terminal.scrollHeight;
     });
 
-    // 2. ЛОГИКА ДЛЯ КРАСНОГО ОКНА (ЦЕЛИ: ROBLOX / YOUTUBE)
+    // Слушатель важных целей (Infinix + YouTube/Roblox)
     onChildAdded(ref(db, 'priority_logs'), (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
-
-        // Убираем надпись "Waiting", если она есть
         if (priorityTerminal.innerText.includes('Waiting')) priorityTerminal.innerHTML = '';
 
         const entry = document.createElement('div');
         entry.className = 'bg-red-900/20 border-l-4 border-red-600 p-2 mb-2 animate-pulse';
-        
-        const deviceIp = data.ip ? data.ip : "?.?.?.?";
-
         entry.innerHTML = `
             <div class="flex justify-between items-center mb-1">
-                <span class="text-red-500 font-black uppercase tracking-tighter text-[11px]">🎯 ${data.target}</span>
+                <span class="text-red-500 font-black uppercase text-[11px]">🎯 ${data.target}</span>
                 <span class="text-white text-[9px] opacity-70">${data.time}</span>
             </div>
-            <div class="flex justify-between text-[9px]">
-                <span class="text-gray-300 font-mono">SOURCE: ${deviceIp}</span>
-                <span class="text-gray-500 truncate ml-4 italic">${data.url}</span>
-            </div>
+            <div class="text-[9px] text-gray-300 font-mono">IP: ${data.ip} | URL: ${data.url}</div>
         `;
-        
-        // Новые цели всегда сверху
         priorityTerminal.prepend(entry);
     });
-
-    // 3. ФУНКЦИЯ ОЧИСТКИ (КНОПКА WIPE)
-    window.wipeData = function() {
-        if (confirm("ВНИМАНИЕ: Очистить все перехваченные данные?")) {
-            // Стираем обе ветки в Firebase
-            set(ref(db, 'logs'), null);
-            set(ref(db, 'priority_logs'), null);
-            
-            // Чистим экран
-            terminal.innerHTML = '<div class="text-green-500">[SYSTEM] База данных успешно очищена.</div>';
-            priorityTerminal.innerHTML = '<div class="text-gray-600 italic">Ожидание целей (Roblox/YouTube)...</div>';
-            
-            console.log("Database Wiped");
-        }
-    }
 </script>
 
     <script src="app.js"></script>
