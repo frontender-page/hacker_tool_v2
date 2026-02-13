@@ -218,56 +218,51 @@
 
  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = { databaseURL: "https://hackerdash-d2075-default-rtdb.firebaseio.com/" };
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  const logsRef = ref(db, 'logs');
+  
   const terminal = document.getElementById('wifiTerminal');
+  const priorityTerminal = document.getElementById('priorityTerminal');
 
-  const priorityRef = ref(db, 'priority_logs');
-const priorityTerminal = document.getElementById('priorityTerminal');
-
-onChildAdded(priorityRef, (snapshot) => {
-    const data = snapshot.val();
-    // Очищаем надпись "Waiting", если пришел первый лог
-    if(priorityTerminal.innerText.includes('Waiting')) priorityTerminal.innerHTML = '';
-
-    const entry = document.createElement('div');
-    entry.className = 'bg-red-900/20 border-l-4 border-red-600 p-2 animate-pulse';
-    entry.innerHTML = `
-        <div class="flex justify-between">
-            <span class="text-red-500 font-bold uppercase">${data.target}</span>
-            <span class="text-white text-[9px]">${data.time}</span>
-        </div>
-        <div class="text-gray-300 text-[9px]">${data.ip} | ${data.url}</div>
-    `;
-    priorityTerminal.prepend(entry); // Новые логи будут СВЕРХУ
-});
-
-  // ФУНКЦИЯ ОЧИСТКИ (и на экране, и в базе!)
-  window.clearLogs = async function() {
-      await remove(logsRef); // Удаляет всё из Firebase
-      terminal.innerHTML = '<div class="text-gray-600">[SYSTEM] Database wiped. Monitoring...</div>';
-  };
-
-  onChildAdded(logsRef, (snapshot) => {
+  // Слушаем ОБЩИЙ лог
+  onChildAdded(ref(db, 'logs'), (snapshot) => {
     const data = snapshot.val();
     const entry = document.createElement('div');
-    entry.className = 'mb-1 border-l-2 border-blue-500 pl-3 bg-blue-500/5 py-2 rounded-r';
-    
-    // Красивый вывод: Имя сервиса жирным, домен мелко
-    entry.innerHTML = `
-        <div class="flex justify-between items-center">
-            <span class="text-blue-400 font-bold text-[11px]">${data.method}</span>
-            <span class="text-gray-600 text-[9px]">${data.time}</span>
-        </div>
-        <div class="text-green-500 truncate">${data.url}</div>
-        <div class="text-[9px] text-gray-500 italic">Source IP: ${data.ip}</div>
-    `;
+    entry.className = 'text-[9px] border-b border-white/5 py-1';
+    entry.innerHTML = `<span class="text-blue-500">[${data.time}]</span> ${data.url}`;
     terminal.appendChild(entry);
     terminal.scrollTop = terminal.scrollHeight;
+  });
+  window.wipeData = function() {
+    if (confirm("Вы уверены, что хотите полностью очистить все логи (включая важные)?")) {
+        // 1. Очищаем основную базу
+        const logsRef = ref(db, 'logs');
+        set(logsRef, null);
+
+        // 2. Очищаем базу важных событий
+        const priorityRef = ref(db, 'priority_logs');
+        set(priorityRef, null);
+
+        // 3. Моментально очищаем интерфейс (чтобы не ждать обновления)
+        document.getElementById('wifiTerminal').innerHTML = '<div class="text-green-500">[SYSTEM] База данных очищена...</div>';
+        document.getElementById('priorityTerminal').innerHTML = '<div class="text-gray-500 italic">Ожидание целей...</div>';
+        
+        console.log("Full Wipe Complete");
+    }
+}
+
+  // Слушаем ПРИОРИТЕТНЫЙ лог (для YouTube/Roblox)
+  onChildAdded(ref(db, 'priority_logs'), (snapshot) => {
+    const data = snapshot.val();
+    if(priorityTerminal) {
+        const entry = document.createElement('div');
+        entry.className = 'bg-red-900/40 border-l-2 border-red-600 p-1 mb-1 animate-pulse';
+        entry.innerHTML = `<b class="text-red-500">${data.target}</b> <span class="text-[8px] text-gray-400">${data.time}</span>`;
+        priorityTerminal.prepend(entry);
+    }
   });
 </script>
 
