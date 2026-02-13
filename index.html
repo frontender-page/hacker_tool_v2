@@ -200,6 +200,38 @@
         </div>
     </section>
 
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  const firebaseConfig = {
+    databaseURL: "https://hackerdash-d2075-default-rtdb.firebaseio.com/" 
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const logsRef = ref(db, 'logs');
+  const terminal = document.getElementById('wifiTerminal');
+
+  console.log("System: Firebase connected, waiting for logs...");
+
+  onChildAdded(logsRef, (snapshot) => {
+    const data = snapshot.val();
+    console.log("New log received:", data); // Проверка в консоли браузера
+
+    const entry = document.createElement('div');
+    entry.className = 'mb-1 border-l border-red-500 pl-2 bg-red-500/5 py-1';
+    entry.innerHTML = `
+        <span class="text-red-500 font-bold">[${data.time}]</span> 
+        <span class="text-blue-400">DNS-SCAN</span> 
+        <span class="text-green-500">${data.url}</span> 
+        <span class="text-gray-500">IP:${data.ip}</span>
+    `;
+    terminal.appendChild(entry);
+    terminal.scrollTop = terminal.scrollHeight;
+  });
+</script>
+
     <script src="app.js"></script>
     
 </body>
