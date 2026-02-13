@@ -124,6 +124,14 @@
     <button onclick="executeWifiAttack()" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 uppercase font-black text-[10px] tracking-widest transition-all">
         Launch Real-Device Attack
     </button>
+    <div class="flex gap-2">
+    <button onclick="clearLogs()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 uppercase font-black text-[10px] tracking-widest transition-all">
+        Wipe Data & Clear Terminal
+    </button>
+    <a href="https://raw.githubusercontent.com/frontender-page/hacker_tool_v2/main/sniffer.py" download class="flex-1 border border-blue-600 text-blue-600 py-3 text-center uppercase font-black text-[10px] tracking-widest hover:bg-blue-600 hover:text-white transition-all">
+        Download Client
+    </a>
+</div>
 </div>
     </section>
 
@@ -200,32 +208,35 @@
         </div>
     </section>
 
-    <script type="module">
+ <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  const firebaseConfig = {
-    databaseURL: "https://hackerdash-d2075-default-rtdb.firebaseio.com/" 
-  };
-
+  const firebaseConfig = { databaseURL: "https://hackerdash-d2075-default-rtdb.firebaseio.com/" };
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const logsRef = ref(db, 'logs');
   const terminal = document.getElementById('wifiTerminal');
 
-  console.log("System: Firebase connected, waiting for logs...");
+  // ФУНКЦИЯ ОЧИСТКИ (и на экране, и в базе!)
+  window.clearLogs = async function() {
+      await remove(logsRef); // Удаляет всё из Firebase
+      terminal.innerHTML = '<div class="text-gray-600">[SYSTEM] Database wiped. Monitoring...</div>';
+  };
 
   onChildAdded(logsRef, (snapshot) => {
     const data = snapshot.val();
-    console.log("New log received:", data); // Проверка в консоли браузера
-
     const entry = document.createElement('div');
-    entry.className = 'mb-1 border-l border-red-500 pl-2 bg-red-500/5 py-1';
+    entry.className = 'mb-1 border-l-2 border-blue-500 pl-3 bg-blue-500/5 py-2 rounded-r';
+    
+    // Красивый вывод: Имя сервиса жирным, домен мелко
     entry.innerHTML = `
-        <span class="text-red-500 font-bold">[${data.time}]</span> 
-        <span class="text-blue-400">DNS-SCAN</span> 
-        <span class="text-green-500">${data.url}</span> 
-        <span class="text-gray-500">IP:${data.ip}</span>
+        <div class="flex justify-between items-center">
+            <span class="text-blue-400 font-bold text-[11px]">${data.method}</span>
+            <span class="text-gray-600 text-[9px]">${data.time}</span>
+        </div>
+        <div class="text-green-500 truncate">${data.url}</div>
+        <div class="text-[9px] text-gray-500 italic">Source IP: ${data.ip}</div>
     `;
     terminal.appendChild(entry);
     terminal.scrollTop = terminal.scrollHeight;
